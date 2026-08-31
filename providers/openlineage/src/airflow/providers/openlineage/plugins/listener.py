@@ -64,7 +64,7 @@ from airflow.utils.state import TaskInstanceState
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
-from airflow.sdk.execution_time.task_runner import RuntimeTaskInstance
+    from airflow.sdk.execution_time.task_runner import RuntimeTaskInstance
 
 if sys.platform == "darwin":
     from setproctitle import getproctitle
