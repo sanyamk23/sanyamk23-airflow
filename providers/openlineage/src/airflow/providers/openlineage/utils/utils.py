@@ -38,8 +38,6 @@ from openlineage.client.facet_v2 import (
 )
 from openlineage.client.utils import RedactMixin
 from openlineage.client.uuid import generate_static_uuid
-from sqlalchemy.orm.exc import DetachedInstanceError
-
 from airflow import __version__ as AIRFLOW_VERSION
 from airflow.models import DagRun, TaskInstance, TaskReschedule
 from airflow.providers.common.compat.assets import Asset, AssetAlias
@@ -775,6 +773,10 @@ if not AIRFLOW_V_3_0_PLUS:
 
 def safe_getattr(obj: Any, attr: str, default: Any = None) -> Any:
     """Get attribute from object, returning default if DetachedInstanceError is raised."""
+    try:
+        from sqlalchemy.orm.exc import DetachedInstanceError
+    except ImportError:
+        return getattr(obj, attr, default)
     try:
         return getattr(obj, attr, default)
     except DetachedInstanceError:
