@@ -1148,7 +1148,7 @@ class DbApiHook(BaseHook):
         """
 
     @staticmethod
-    def get_openlineage_authority_part(connection, default_port: int | None = None) -> str:
+    def get_openlineage_authority_part(connection, default_port: int | None = None) -> str | None:
         """
         Get authority part from Airflow Connection.
 
@@ -1158,12 +1158,12 @@ class DbApiHook(BaseHook):
         :param default_port: (optional) used if no port parsed from connection URI
         """
         parsed = urlparse(connection.get_uri())
+        if not parsed.hostname:
+            return None
         port = parsed.port or default_port
         if port:
-            authority = f"{parsed.hostname}:{port}"
-        else:
-            authority = parsed.hostname
-        return authority
+            return f"{parsed.hostname}:{port}"
+        return parsed.hostname
 
     def get_db_log_messages(self, conn) -> None:
         """
